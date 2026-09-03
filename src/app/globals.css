@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@theme {
+  /*
+   * Their own wall: terracotta timber slats and a dark faceted-marble panel,
+   * sampled from a daylight frame rather than one of their (more common)
+   * night shots. The wood is the accent, kept to text and rules; the ground
+   * is a dark warm charcoal rather than the terracotta itself, because a
+   * whole page in that orange would fight the cars far more than a wall
+   * with one car standing in front of it ever does.
+   */
+  --color-ground: #1b1613; /* the counter */
+  --color-ground-2: #241e19; /* raised card */
+  --color-ground-3: #322a22; /* rules only — never text */
+  --color-cream: #ede6dd; /* 14.5:1 on ground */
+  --color-cream-2: #b8aca0; /* 8.1:1 on ground */
+  --color-cream-3: #8f8478; /* 4.9:1 on ground — the faintest text allowed */
+  --color-terracotta: #e8935e; /* their wall's timber, lifted for text: 7.5:1 */
+  --color-graphite: #9fa19e; /* their marble panel & monogram: 6.9:1 */
+
+  --font-display: var(--font-unbounded), "Helvetica Neue", sans-serif;
+  --font-body: var(--font-work-sans), system-ui, sans-serif;
+  --font-arabic-display: var(--font-reem-kufi), "Segoe UI", sans-serif;
+  --font-arabic-body: var(--font-cairo), system-ui, sans-serif;
+
+  --text-hero: clamp(2rem, 5.2vw, 4.2rem);
+  --text-display: clamp(1.5rem, 3vw, 2.5rem);
+  --text-lead: clamp(0.98rem, 1.1vw, 1.12rem);
+
+  /* A gap in a lattice does not fade open — it is simply the space that
+     was always there, and the piece behind it is either seen or it isn't. */
+  --ease-glimpse: cubic-bezier(0.16, 0.9, 0.2, 1);
+}
+
+@layer base {
+  section[id] { scroll-margin-top: 5.5rem; }
+
+  html {
+    background: var(--color-ground);
+    color: var(--color-cream);
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: auto;
+  }
+
+  body { font-family: var(--font-body); overflow-x: hidden; }
+  html[dir="rtl"] body { font-family: var(--font-arabic-body); }
+
+  ::selection { background: var(--color-terracotta); color: var(--color-ground); }
+  :focus-visible { outline: 2px solid var(--color-terracotta); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility font-display { font-family: var(--font-display); }
+html[dir="rtl"] .font-display { font-family: var(--font-arabic-display); }
+
+@utility label {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.66rem;
+  font-weight: 600;
+}
+html[dir="rtl"] .label {
+  font-family: var(--font-arabic-body);
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.82rem;
+}
+
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion signature: the glimpse.
+ *
+ * Content is masked by a diamond that grows from a pinpoint to cover the
+ * block — the shape of a single gap in the lattice opening up — rather than
+ * fading or sliding into place.
+ * ------------------------------------------------------------------------ */
+
+@keyframes glimpse-in {
+  from { clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%); opacity: 0.001; }
+  to { clip-path: polygon(50% -40%, 190% 50%, 50% 140%, -90% 50%); opacity: 1; }
+}
+@keyframes rule-glimpse { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes glimpse-in { from { opacity: 1; clip-path: none; } to { opacity: 1; clip-path: none; } }
+  @keyframes rule-glimpse { from { transform: none; } to { transform: none; } }
+}
+
+[data-glimpse] { opacity: 0.001; }
+[data-glimpse][data-seen] {
+  animation: glimpse-in 640ms var(--ease-glimpse) var(--glimpse-delay, 0ms) both;
+}
+[data-glimpse-rule] { transform: scaleX(0); }
+[data-glimpse-rule][data-seen] {
+  animation: rule-glimpse 520ms var(--ease-glimpse) var(--glimpse-delay, 0ms) both;
+}
+
+/* ---------------------------------------------------------------------------
+ * Arabic corrections. Keyed off [dir], never [lang] — browser translation
+ * rewrites lang. Unlayered so they outrank Tailwind utilities.
+ * ------------------------------------------------------------------------ */
+
+html[dir="ltr"] .text-hero { line-height: 1.05; }
+html[dir="rtl"] .text-hero {
+  font-size: clamp(2.1rem, 5.6vw, 4.1rem);
+  /* Reem Kufi is a heavy geometric kufi with tall verticals; a tight leading
+     collides its strokes with the line above. */
+  line-height: 1.55;
+}
+html[dir="ltr"] .text-display { line-height: 1.1; }
+html[dir="rtl"] .text-display {
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem);
+  line-height: 1.55;
+}
+
+html[dir="rtl"] [class*="tracking-["],
+html[dir="rtl"] .tracking-widest,
+html[dir="rtl"] .tracking-wider { letter-spacing: 0; }
+
+.fine { font-size: 0.78rem; line-height: 1.6; }
+html[dir="rtl"] .fine { font-size: 0.84rem; line-height: 1.8; }
+
+html[dir="rtl"] .text-lead { font-size: clamp(1.02rem, 1.15vw, 1.16rem); line-height: 1.95; }
+
+/* Marque names, model codes and phone numbers stay Latin and LTR inside
+   Arabic copy — "12Cilindri" must not reorder. */
+.latin {
+  direction: ltr;
+  unicode-bidi: isolate;
+  font-family: var(--font-body);
+}
+html[dir="rtl"] .latin { text-align: right; }

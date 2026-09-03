@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <!--
+    A redraw, not their file: the diamond monogram on their own showroom
+    wall, as an interlocking angular lattice rather than a literal V.
+  -->
+  <path d="M24 6 38 20 24 34 10 20Z" stroke="#ede6dd" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M24 14 30 20 24 26 18 20Z" stroke="#e8935e" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M24 34v8" stroke="#ede6dd" stroke-width="2" stroke-linecap="round"/>
+</svg>
