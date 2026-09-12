@@ -447,7 +447,6 @@ export function Footer() {
           <img src="/mark.svg" alt="" className="h-6 w-6" />
           <span className="font-display text-[0.9rem] font-semibold text-cream">{c.brand.name}</span>
         </div>
-        <p className="fine max-w-[64ch] text-cream-2">{c.footer.disclaimer}</p>
         <p className="fine text-cream-2">{c.footer.rights}</p>
       </div>
     </footer>
